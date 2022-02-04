@@ -1,0 +1,7 @@
+imageio~=2.14.1
+numpy~=1.22.2
+scikit-image~=0.19.1
+sklearn~=1.0.2
+torch==1.8.1
+tqdm~=4.62.3
+torchvision==0.9.1
