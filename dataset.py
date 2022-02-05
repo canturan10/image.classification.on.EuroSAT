@@ -3,13 +3,13 @@ import os
 import imageio
 import numpy as np
 import torch
-from PIL import Image
 from skimage import img_as_float32, img_as_ubyte
 from skimage.transform import resize
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from torchvision.datasets.utils import download_and_extract_archive
+from colorama import Fore
 
 
 class EurosatDataset(torch.utils.data.Dataset):
@@ -65,29 +65,31 @@ class EurosatDataset(torch.utils.data.Dataset):
             )
 
         i = 0
-        print(f'All images are reading from the folder "{self.root_dir}"')
-        print(
-            f'The images split in train and test is based on the seed {self.seed}')
 
-        for item in tqdm(os.listdir(self.root_dir)):
-            f = os.path.join(self.root_dir, item)
-            if os.path.isfile(f):
-                continue
-            for subitem in os.listdir(f):
-                sub_f = os.path.join(f, subitem)
-                filenames.append(sub_f)
+        with tqdm(os.listdir(self.root_dir), bar_format="{l_bar}%s{bar}%s{r_bar}" % (Fore.GREEN, Fore.RESET)) as dir_bar:
+            for item in dir_bar:
+                f = os.path.join(self.root_dir, item)
+                if os.path.isfile(f):
+                    continue
+                for subitem in os.listdir(f):
+                    sub_f = os.path.join(f, subitem)
+                    filenames.append(sub_f)
 
-                # a few images are a few pixels off, we will resize them
-                image = imageio.imread(sub_f)
-                if image.shape[0] != self.size[0] or image.shape[1] != self.size[1]:
-                    # print("Resizing image...")
-                    image = img_as_ubyte(
-                        resize(
-                            image, (self.size[0], self.size[1]), anti_aliasing=True)
-                    )
-                images[i] = img_as_ubyte(image)
-                i += 1
-                labels.append(item)
+                    # a few images are a few pixels off, we will resize them
+                    image = imageio.imread(sub_f)
+                    if image.shape[0] != self.size[0] or image.shape[1] != self.size[1]:
+                        # print("Resizing image...")
+                        image = img_as_ubyte(
+                            resize(
+                                image, (self.size[0], self.size[1]), anti_aliasing=True)
+                        )
+                    images[i] = img_as_ubyte(image)
+                    i += 1
+                    labels.append(item)
+
+                dir_bar.set_description(
+                    f"{'Train' if self.is_train else 'Test'} images are reading..")
+                dir_bar.set_postfix(category=item)
 
         labels = np.asarray(labels)
         filenames = np.asarray(filenames)
@@ -105,7 +107,7 @@ class EurosatDataset(torch.utils.data.Dataset):
         self.label_encoding = list(label_encoder.classes_)
 
         # split into a is_train and test set as provided data is not presplit
-        X_train, X_test, y_train, y_test = train_test_split(
+        x_train, x_test, y_train, y_test = train_test_split(
             images,
             labels,
             test_size=self.test_ratio,
@@ -114,10 +116,10 @@ class EurosatDataset(torch.utils.data.Dataset):
         )
 
         if self.is_train:
-            self.data = X_train
+            self.data = x_train
             self.targets = y_train
         else:
-            self.data = X_test
+            self.data = x_test
             self.targets = y_test
 
     def __len__(self):
@@ -131,12 +133,14 @@ class EurosatDataset(torch.utils.data.Dataset):
 
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
-        img = Image.fromarray(img)
+        # img = Image.fromarray(img)
 
         if self.transform:
             img = self.transform(img)
 
-        return img, self.targets[idx]
+        image = np.asarray(img / 255, dtype="float32")
+
+        return image.transpose(2, 0, 1), self.targets[idx]
 
     def _check_exists(self) -> bool:
         """
