@@ -39,7 +39,7 @@ def parse_arguments():
     arg.add_argument("--optimizer", type=str,
                      default="sgd", choices=['sgd', 'adam'])
 
-    arg.add_argument("--learning_rate", type=float, default=0.03)
+    arg.add_argument("--learning_rate", type=float, default=0.01)
     arg.add_argument("--momentum", type=float, default=0.9)
     arg.add_argument("--weight_decay", type=float, default=5e-4)
     arg.add_argument("--dropout", type=float, default=0.0,
