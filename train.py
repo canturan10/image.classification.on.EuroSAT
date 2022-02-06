@@ -27,6 +27,7 @@ def parse_arguments():
     arg.add_argument(
         "--device", type=int, default=torch.device("cuda" if torch.cuda.is_available() else "cpu"), choices=['cuda', 'cpu'])
     arg.add_argument("--save_dir", type=str, default="./saved_models")
+    arg.add_argument("--data_dir", type=str, default="data/EuroSAT/")
 
     arg.add_argument("--batch_size", type=int, default=128,
                      help="total number of batch size of labeled data")
@@ -90,12 +91,14 @@ def main(args):
 
     # Construct Dataset
 
-    train_dataset = EurosatDataset(is_train=True, seed=args.seed)
+    train_dataset = EurosatDataset(
+        is_train=True, seed=args.seed, root_dir=args.data_dir)
 
     print(
         f'Number of data on Train Dataset is {len(train_dataset)}')
 
-    test_dataset = EurosatDataset(is_train=False, seed=args.seed)
+    test_dataset = EurosatDataset(
+        is_train=False, seed=args.seed, root_dir=args.data_dir)
 
     print(
         f'Number of data on Test Dataset is {len(test_dataset)}')

@@ -57,7 +57,7 @@ class Classifier(nn.Module):
             nn.Linear(
                 int(((self.config["input_size"] - 5 + 1) // 2)) ** 2 * 32, 128),
             nn.ReLU(),
-            nn.Dropout(config['dropout']),
+            nn.Dropout(self.config['dropout']),
             nn.Linear(128, self.num_classes),
         )
 
@@ -163,40 +163,16 @@ class Classifier(nn.Module):
 
     def loss(self, y_pred, y_true):
         """
-        [summary]
+        Loss function.
 
         Args:
-            y_pred ([type]): [description]
-            y_true ([type]): [description]
+            y_pred : Predicted output.
+            y_true : True output.
 
         Returns:
-            [type]: [description]
+                Loss value.
         """
         return self.loss_fcn(y_pred, y_true)
-
-    def predict_proba(self, x):
-        """
-        [summary]
-
-        Args:
-            x ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-        return nn.functional.softmax(self(x), dim=-1)
-
-    def predict_classes(self, x):
-        """
-        [summary]
-
-        Args:
-            x ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-        return torch.argmax(self(x), dim=-1)
 
 
 if __name__ == "__main__":

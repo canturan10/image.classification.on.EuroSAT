@@ -18,7 +18,7 @@ class EurosatDataset(torch.utils.data.Dataset):
     Eurosat is a dataset and deep learning benchmark for land use and land cover classification. The dataset is based on Sentinel-2 satellite images covering 13 spectral bands and consisting out of 10 classes with in total 27,000 labeled and geo-referenced images.
     """
 
-    def __init__(self, is_train, root_dir="data/EuroSAT/2750/", transform=None, seed=42, download=False):
+    def __init__(self, is_train, root_dir="data/EuroSAT/", transform=None, seed=42, download=False):
         """
         EurosatDataset
 
@@ -41,6 +41,7 @@ class EurosatDataset(torch.utils.data.Dataset):
         self.num_classes = 10
         self.test_ratio = 0.2
         self.N = 27000
+        self.extaraced = '2750'
         self._load_data()
 
     def _load_data(self):
@@ -65,10 +66,11 @@ class EurosatDataset(torch.utils.data.Dataset):
             )
 
         i = 0
+        data_dir = os.path.join(self.root_dir, self.extaraced)
 
-        with tqdm(os.listdir(self.root_dir), bar_format="{l_bar}%s{bar}%s{r_bar}" % (Fore.GREEN, Fore.RESET)) as dir_bar:
+        with tqdm(os.listdir(data_dir), bar_format="{l_bar}%s{bar}%s{r_bar}" % (Fore.GREEN, Fore.RESET)) as dir_bar:
             for item in dir_bar:
-                f = os.path.join(self.root_dir, item)
+                f = os.path.join(data_dir, item)
                 if os.path.isfile(f):
                     continue
                 for subitem in os.listdir(f):
@@ -165,6 +167,6 @@ class EurosatDataset(torch.utils.data.Dataset):
 
 
 if __name__ == '__main__':
-    dset = EurosatDataset(is_train=True, seed=42, download=True)
+    dset = EurosatDataset(is_train=False, seed=42, download=True)
     print(len(dset))
     print(dset.label_encoding)
