@@ -1,4 +1,4 @@
-Pillow==7.1.2
+Pillow
 colorama~=0.4.4
 imageio
 numpy~=1.19.5
