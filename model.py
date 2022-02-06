@@ -1,8 +1,8 @@
+from typing import Dict, List
 import numpy as np
 import torch
-import torch.nn as nn
+from torch import nn
 import torchsummary
-from typing import Dict, List
 
 
 class Classifier(nn.Module):
@@ -15,6 +15,9 @@ class Classifier(nn.Module):
     __default_config__ = {
         "input_size": 64,
         "labels": ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake'],
+        "loss_function": "crossentropy",
+        'dropout': 0.2,
+
     }
 
     def __init__(self, config: Dict = None):
@@ -31,7 +34,10 @@ class Classifier(nn.Module):
         self.labels = list(self.config["labels"])
         self.num_classes = len(self.labels)
 
-        self.loss_fcn = nn.CrossEntropyLoss()
+        if self.config['loss_function'] == 'crossentropy':
+            self.loss_fcn = nn.CrossEntropyLoss()
+        else:
+            raise ValueError('Unknown criterion')
 
         self.backbone = nn.Sequential(
             nn.Conv2d(
@@ -51,7 +57,7 @@ class Classifier(nn.Module):
             nn.Linear(
                 int(((self.config["input_size"] - 5 + 1) // 2)) ** 2 * 32, 128),
             nn.ReLU(),
-            nn.Dropout(0.2),
+            nn.Dropout(config['dropout']),
             nn.Linear(128, self.num_classes),
         )
 
@@ -99,7 +105,6 @@ class Classifier(nn.Module):
         Returns:
             nn.Module: Pretrained model.
         """
-
         state_dict = torch.load(model_path)
         pretrained_model = cls(config=state_dict['config'], *args, **kwargs)
         pretrained_model.load_state_dict(state_dict['state_dict'])
@@ -143,16 +148,17 @@ class Classifier(nn.Module):
         Returns:
             torch.Tensor: Converted input array as torch.Tensor.
         """
+        data = input_array.copy()
 
-        if len(input_array.shape) == 3:  # h,w,c
+        if len(data.shape) == 3:  # h,w,c
             new_inputs = torch.from_numpy(
-                np.expand_dims(input_array, axis=0)).float().permute(0, 3, 1, 2).contiguous()
-        elif len(input_array.shape) == 4:  # assumed bs,h,w,c
+                np.expand_dims(data, axis=0)).float().permute(0, 3, 1, 2).contiguous()
+        elif len(data.shape) == 4:  # assumed bs,h,w,c
             new_inputs = torch.from_numpy(
-                input_array).float().permute(0, 3, 1, 2).contiguous()
+                data).float().permute(0, 3, 1, 2).contiguous()
         else:
             raise AssertionError(
-                f"input shape not supported: {input_array.shape}")
+                f"input shape not supported: {data.shape}")
         return new_inputs.to(self.device)
 
     def loss(self, y_pred, y_true):
