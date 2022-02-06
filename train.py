@@ -13,6 +13,7 @@ import random
 import torch
 import torch.optim as optim
 import warnings
+import os
 # suppress warnings
 warnings.filterwarnings("ignore")
 
@@ -148,6 +149,9 @@ def main(args):
     best_acc = 0
     correct_pred = {classname: 0 for classname in train_dataset.label_encoding}
     total_pred = {classname: 0 for classname in train_dataset.label_encoding}
+
+    if not os.path.exists(args.save_dir):
+        os.makedirs(args.save_dir, exist_ok=True)
 
     print(f'Start training with {args.epoch} epochs')
 
