@@ -13,6 +13,12 @@
     </strong>
 </p>
 
+![-----------------------------------------------------](https://raw.githubusercontent.com/canturan10/readme-template/master/src/solar_gradient.png)
+<p align="center">
+<p align="center"><strong> !! New Framework Released for Satellite Image Classification !!</strong></p>
+<p align="center"><strong> <a href="https://github.com/canturan10/satellighte">satellighte: PyTorch Lightning Implementations of Recent Satellite Image Classification ! </a></strong></p>
+
+![-----------------------------------------------------](https://raw.githubusercontent.com/canturan10/readme-template/master/src/solar_gradient.png)
 <!-- TABLE OF CONTENTS -->
 
 <details>
@@ -34,7 +40,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About
 
-EuroSAT is a large-scale land use and land cover classification dataset derived from multispectral Sentinel-2 satellite imagery covering European continent. EuroSAT is composed of 27,000 georeferenced image patches (64 x 64 pixels) - each patch comprises 13 spectral bands (optical through to shortwave infrared ) resampled to 10m spatila resolution and labelled with one of 10 distinct land cover classes: AnnualCrop, Forest, HerbaceousVegetation, Highway, Industrial, Pasture, PermanentCrop, Residential, River, SeaLake. Full details including links to journal papers and download instructions may be found here: https://github.com/phelber/eurosat.
+EuroSAT is a large-scale land use and land cover classification dataset derived from multispectral Sentinel-2 satellite imagery covering European continent. EuroSAT is composed of 27,000 georeferenced image patches (64 x 64 pixels) - each patch comprises 13 spectral bands (optical through to shortwave infrared ) resampled to 10m spatila resolution and labelled with one of 10 distinct land cover classes: AnnualCrop, Forest, HerbaceousVegetation, Highway, Industrial, Pasture, PermanentCrop, Residential, River, SeaLake. Full details including links to journal papers and download instructions may be found here: <https://github.com/phelber/eurosat>.
 
 _Source: [eurosat-github-page](https://github.com/phelber/eurosat)_
 
